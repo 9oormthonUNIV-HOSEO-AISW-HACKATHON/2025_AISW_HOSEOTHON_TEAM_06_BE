@@ -3,12 +3,15 @@ package com.example.hackerton_be.User.Login;
 import com.example.hackerton_be.User.database.Users;
 import com.example.hackerton_be.User.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Lazy // ✨ CustomUserDetailsService에도 @Lazy를 적용합니다.
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
