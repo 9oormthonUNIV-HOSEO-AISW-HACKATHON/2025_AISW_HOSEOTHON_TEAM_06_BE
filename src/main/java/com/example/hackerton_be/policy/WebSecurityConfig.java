@@ -2,15 +2,32 @@ package com.example.hackerton_be.policy;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    //비번
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,7 +42,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 3. Swagger UI 및 API 문서 경로 접근 허용
                         .requestMatchers(
-                                "/**",
+                                "/hi",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/",
@@ -35,8 +52,7 @@ public class WebSecurityConfig {
 
                         // 4. 인증/회원가입 API 접근 허용
                         .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login"
+                                "/api/auth/**"
                         ).permitAll()
 
                         .requestMatchers(
