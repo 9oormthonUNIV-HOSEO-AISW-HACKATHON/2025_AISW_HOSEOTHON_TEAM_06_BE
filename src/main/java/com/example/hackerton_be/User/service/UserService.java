@@ -15,4 +15,6 @@ public interface UserService {
     // 로그인 및 토큰 발급
     String login(UserLoginDto requestDto, HttpServletResponse response);
 
+    // 아이디 체크
+    boolean checkUserIdDuplication(String userId);
 }

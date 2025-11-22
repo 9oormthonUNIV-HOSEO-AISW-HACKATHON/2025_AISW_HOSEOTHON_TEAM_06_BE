@@ -65,23 +65,18 @@ public class UserImpl implements UserService {
         try {
             // 1. AuthenticationManager를 안전하게 가져옴
 //            AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
-            System.out.println(1);
             // 2. DTO를 사용해 인증 토큰 생성 (요청 객체 접근 오류 수정)
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(requestDto.getUserId(), requestDto.getUserPass());
-            System.out.println(2);
 
             // 3. 인증 시도
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            System.out.println(3);
 
             // 4. SecurityContext에 Authentication 객체 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println(4);
 
             // 5. JWT 생성
             String token = jwtUtil.createToken(authentication);
-            System.out.println(5);
 
             System.out.println("token = " + token);
 
@@ -96,5 +91,13 @@ public class UserImpl implements UserService {
             System.err.println("로그인 인증 실패: " + e.getClass().getName() + " - " + e.getMessage());
             throw new RuntimeException("로그인 실패: 아이디 또는 비밀번호를 확인하세요.", e);
         }
+    }
+
+    /**
+     * 아이디 중복 체크
+     */
+    @Override
+    public boolean checkUserIdDuplication(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
     }
 }
