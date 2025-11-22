@@ -120,28 +120,46 @@ public class UserIAuthImpl implements UserService {
     @Transactional
     @Override
     public UserDto updateUser(String userId, UserSignDto requestDto) {
-        // 1. ID로 사용자 엔티티 조회 (수정 대상)
+
         Users user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
-        // 2. 요청 DTO를 기반으로 엔티티 필드 업데이트
 
-        // 비밀번호가 제공된 경우에만 암호화하여 업데이트
         if (requestDto.getUserPass() != null && !requestDto.getUserPass().isEmpty()) {
             String encodedPass = passwordEncoder.encode(requestDto.getUserPass());
             user.setUserPass(encodedPass);
         }
 
-        // 나머지 필드들은 null 체크 후 업데이트
         if (requestDto.getUserName() != null) user.setUserName(requestDto.getUserName());
         if (requestDto.getUserSex() != null) user.setUserSex(requestDto.getUserSex());
         if (requestDto.getUserIsMz() != null) user.setUserIsMz(requestDto.getUserIsMz());
         if (requestDto.getUserNickname() != null) user.setUserNickname(requestDto.getUserNickname());
 
-        // 3. 변경 사항 저장 (Transactional 덕분에 자동 반영되지만 명시적으로 호출)
         Users updatedUser = userRepository.save(user);
 
-        // 4. 응답 DTO 반환 (ID, PK만 포함)
         return new UserDto(updatedUser.getIdx(), updatedUser.getUserId());
+    }
+
+    /**
+     * 회원 탈퇴 로직
+     */
+    @Transactional
+    @Override
+    public void deleteUser(String userId) {
+        Users user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
+
+        userRepository.delete(user);
+    }
+
+    /**
+     * 유저 포인트 조회
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public Integer getUserPoint(String userId) {
+        Users user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
+        return user.getUserPoint();
     }
 }

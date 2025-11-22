@@ -21,4 +21,8 @@ public interface UserService {
     UserSignDto myPage(String userId);
 
     UserDto updateUser(String userId, UserSignDto requestDto);
+
+    void deleteUser(String userId);
+
+    Integer getUserPoint(String userId);
 }
