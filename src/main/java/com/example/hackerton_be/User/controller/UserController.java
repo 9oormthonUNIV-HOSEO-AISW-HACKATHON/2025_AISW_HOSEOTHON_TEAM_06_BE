@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Map;
 
-@Tag(name="회원 인증", description = "회원 인증 관현 API 명세서입니다.")
+@Tag(name="회원 인증", description = "회원 인증 관련 API 명세서입니다.")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

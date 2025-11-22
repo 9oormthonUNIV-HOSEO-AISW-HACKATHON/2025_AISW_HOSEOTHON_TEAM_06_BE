@@ -65,6 +65,12 @@ public class WebSecurityConfig {
 //                                "/api/auth/myPage"
                         ).permitAll()
 
+                        // 5. 단어 API 접근 허용
+                        .requestMatchers(
+                                "/api/word/**",
+                                "api/que/**"
+                        ).permitAll()
+
                         .requestMatchers(
                                 "/api/test/test1",
                                 "/api/test/test2"
