@@ -62,13 +62,12 @@ public class WebSecurityConfig {
                                 "/api/auth/signup",
                                 "/api/auth/login",
                                 "/api/auth/checkId"
-//                                "/api/auth/myPage"
                         ).permitAll()
 
                         // 5. 단어 API 접근 허용
                         .requestMatchers(
-                                "/api/word/**",
-                                "api/que/**"
+                                "/api/word/**"
+//                                "api/que/**"
                         ).permitAll()
 
                         .requestMatchers(
