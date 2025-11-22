@@ -162,4 +162,25 @@ public class UserIAuthImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
         return user.getUserPoint();
     }
+
+    /**
+     * 포인트 증감 로직
+     */
+    @Transactional
+    @Override
+    public void updatePoint(String userId, int pointChange) {
+        Users user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("포인트를 변경할 사용자 정보를 찾을 수 없습니다."));
+
+        int currentPoint = user.getUserPoint();
+        int newPoint = currentPoint + pointChange;
+
+        // 0점 미만이 되는 경우 방지
+        if (newPoint < 0) {
+            throw new IllegalArgumentException("포인트는 음수가 될 수 없습니다. (현재: " + currentPoint + ", 변경 요청: " + pointChange + ")");
+        }
+
+        user.setUserPoint(newPoint);
+        userRepository.save(user);
+    }
 }

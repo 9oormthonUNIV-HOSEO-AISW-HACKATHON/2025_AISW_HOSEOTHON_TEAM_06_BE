@@ -25,4 +25,6 @@ public interface UserService {
     void deleteUser(String userId);
 
     Integer getUserPoint(String userId);
+
+    void updatePoint(String userId, int pointChange);
 }

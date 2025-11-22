@@ -1,10 +1,7 @@
 package com.example.hackerton_be.User.controller;
 
-import com.example.hackerton_be.User.Dto.UserCheckIdDto;
-import com.example.hackerton_be.User.Dto.UserDto;
+import com.example.hackerton_be.User.Dto.*;
 
-import com.example.hackerton_be.User.Dto.UserLoginDto;
-import com.example.hackerton_be.User.Dto.UserSignDto;
 import com.example.hackerton_be.User.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Map;
 
 @Tag(name="회원 인증", description = "회원 인증 관현 API 명세서입니다.")
 @RestController
@@ -136,6 +135,40 @@ public class UserController {
             return ResponseEntity.ok(String.valueOf(point));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("인증 정보를 찾을 수 없습니다.");
+        }
+    }
+
+    /**
+     * 포인트 증감 (인풋: 점수만)
+     */
+    @PostMapping("/addPoint")
+    public ResponseEntity<String> addPoint(
+            @RequestBody UserPointDto requestBody,
+            Authentication authentication
+    ) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String userId = authentication.getName();
+
+        Integer pointChange;
+        try {
+            if (requestBody.getUserPoint() == null || requestBody.getUserPoint().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("필수 매개변수가 누락됐습니다.");
+            }
+            pointChange = Integer.parseInt(requestBody.getUserPoint());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("포인트 값은 숫자로 입력되어야 합니다.");
+        }
+
+        try {
+            userService.updatePoint(userId, pointChange);
+            return ResponseEntity.ok("포인트가 성공적으로 업데이트되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
