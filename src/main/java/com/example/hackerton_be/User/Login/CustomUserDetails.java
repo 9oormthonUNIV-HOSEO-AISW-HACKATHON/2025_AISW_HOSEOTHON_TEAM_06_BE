@@ -1,6 +1,7 @@
 package com.example.hackerton_be.User.Login;
 
 import com.example.hackerton_be.User.database.Users;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +10,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 
+@Getter
 public class CustomUserDetails implements UserDetails {
+    // JWT 생성 시 필요한 Users 엔티티를 반환하는 메서드 추가
     private final Users user;
 
     public CustomUserDetails(Users user) {
@@ -46,8 +49,4 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 
-    // JWT 생성 시 필요한 Users 엔티티를 반환하는 메서드 추가
-    public Users getUser() {
-        return user;
-    }
 }

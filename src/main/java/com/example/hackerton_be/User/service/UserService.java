@@ -16,5 +16,7 @@ public interface UserService {
     String login(UserLoginDto requestDto, HttpServletResponse response);
 
     // 아이디 체크
-    boolean checkUserIdDuplication(String userId);
+    boolean checkUserIdD(String userId);
+
+    UserSignDto myPage(String userId);
 }

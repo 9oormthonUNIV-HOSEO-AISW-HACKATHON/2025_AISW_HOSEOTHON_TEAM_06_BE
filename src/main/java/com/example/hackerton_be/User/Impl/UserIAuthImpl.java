@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy; // Lazy import 추가
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserImpl implements UserService {
+public class UserIAuthImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -97,7 +96,24 @@ public class UserImpl implements UserService {
      * 아이디 중복 체크
      */
     @Override
-    public boolean checkUserIdDuplication(String userId) {
+    public boolean checkUserIdD(String userId) {
         return userRepository.findByUserId(userId).isPresent();
+    }
+
+    /**
+     * 마이페이지 상세 정보 조회 로직
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public UserSignDto myPage(String userId){
+        Users user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
+
+        // 2. 응답 DTO 생성 (필요한 모든 정보를 담아)
+        return new UserSignDto(
+                user.getUserId(), user.getUserPass(),
+                user.getUserIsMz(), user.getUserName(),
+                user.getUserSex(),user.getUserNickname()
+        );
     }
 }

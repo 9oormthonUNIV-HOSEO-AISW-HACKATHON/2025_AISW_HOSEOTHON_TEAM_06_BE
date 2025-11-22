@@ -35,7 +35,7 @@ public class JwtUtil {
                 .claim("userId", user.getUserId()) // 내가 토큰에 넣고 싶은 정보들
                 .claim("authorities", authorities)
                 .issuedAt(new Date(System.currentTimeMillis())) // 언제 생성됨?
-                .expiration(new Date(System.currentTimeMillis() + 10000)) //유효기간 10초
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*60)) //유효기간 10초
                 .signWith(key) // 해싱키
                 .compact();
         return jwt;

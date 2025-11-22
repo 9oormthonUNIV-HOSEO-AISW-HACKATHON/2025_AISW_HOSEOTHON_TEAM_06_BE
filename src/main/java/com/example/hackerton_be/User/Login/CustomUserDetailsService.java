@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Lazy // ✨ CustomUserDetailsService에도 @Lazy를 적용합니다.
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 

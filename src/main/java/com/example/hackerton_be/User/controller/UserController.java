@@ -11,10 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 @Tag(name="회원 인증", description = "회원 인증 관현 API 명세서입니다.")
 @RestController
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    // 1. AuthService 의존성 주입 (이전 코드에서 누락된 부분)
     private final UserService userService;
 
     /**
@@ -47,15 +44,35 @@ public class UserController {
         return ResponseEntity.ok(tokenResponse);
     }
 
-    /** 아이디 중복 체크 */
+    /**
+     * 아이디 중복 체크
+     * */
     @PostMapping("/checkId")
     public ResponseEntity<String> checkId(@RequestBody UserCheckIdDto requestDto) {
         String userId = requestDto.getUserId();
 
-        if (userService.checkUserIdDuplication(userId)) {
+        if (userService.checkUserIdD(userId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("중복된 아이디입니다.");
         } else {
             return ResponseEntity.ok("사용 가능한 아이디입니다.");
         }
+    }
+
+    /**
+     * 마이페이지
+     * */
+    @GetMapping("myPage")
+    public ResponseEntity<UserSignDto> myPage(Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String userId = authentication.getName();
+        System.out.println("dddd: "+authentication.getPrincipal());
+
+        UserSignDto userDetails = userService.myPage(userId);
+
+        return ResponseEntity.ok(userDetails);
     }
 }

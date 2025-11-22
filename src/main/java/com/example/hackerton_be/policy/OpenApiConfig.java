@@ -1,4 +1,4 @@
-package com.yourproject.config;
+package com.example.hackerton_be.policy;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -15,4 +15,5 @@ public class UserSignDto {
     private String userIsMz;
     private String userName;
     private String userSex;
+    private String userNickname;
 }

@@ -1,5 +1,8 @@
 package com.example.hackerton_be.policy;
 
+import com.example.hackerton_be.User.Login.CustomUserDetailsService;
+import com.example.hackerton_be.User.service.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,10 +14,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -50,7 +59,10 @@ public class WebSecurityConfig {
 
                         // 4. 인증/회원가입 API 접근 허용
                         .requestMatchers(
-                                "/api/auth/**"
+                                "/api/auth/signup",
+                                "/api/auth/login",
+                                "/api/auth/checkId"
+//                                "/api/auth/myPage"
                         ).permitAll()
 
                         .requestMatchers(
@@ -62,9 +74,11 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-        // 6. JWT 필터 등록 (이 코드는 실제 JWTUtil 구현 후 추가해야 합니다.)
-        // http.addFilterBefore(new JwtFilter(jwtUtil, userService), UsernamePasswordAuthenticationFilter.class);
-
+        // 6. JWT 필터 등록
+        http.addFilterBefore(
+                new com.example.hackerton_be.policy.JwtFilter(jwtUtil, customUserDetailsService),
+                UsernamePasswordAuthenticationFilter.class
+        );
         return http.build();
     }
 }
