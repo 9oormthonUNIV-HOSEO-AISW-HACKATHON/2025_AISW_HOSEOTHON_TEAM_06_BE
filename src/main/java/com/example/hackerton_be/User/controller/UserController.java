@@ -24,8 +24,6 @@ public class UserController {
 
     /**
      * 회원가입
-     * @param requestDto 회원 정보 (ID, PW 등)
-     * @return 성공적으로 생성된 회원 정보
      */
     @PostMapping("/signup")
     public ResponseEntity<UserDto> signUp(@RequestBody UserSignDto requestDto) {
@@ -35,8 +33,6 @@ public class UserController {
 
     /**
      * 로그인 및 JWT 발급
-     * @param requestDto 로그인 정보 (ID, PW)
-     * @return JWT 토큰 및 메타데이터
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginDto requestDto, HttpServletResponse response) {
@@ -61,7 +57,7 @@ public class UserController {
     /**
      * 마이페이지
      * */
-    @GetMapping("myPage")
+    @GetMapping("/myPage")
     public ResponseEntity<UserSignDto> myPage(Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -74,5 +70,14 @@ public class UserController {
         UserSignDto userDetails = userService.myPage(userId);
 
         return ResponseEntity.ok(userDetails);
+    }
+
+    @PostMapping("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestBody UserSignDto requestDto, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok("성공적으로 완료됐습니다.");
     }
 }

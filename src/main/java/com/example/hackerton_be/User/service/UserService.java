@@ -19,4 +19,6 @@ public interface UserService {
     boolean checkUserIdD(String userId);
 
     UserSignDto myPage(String userId);
+
+    UserDto updateUser(String userId, UserSignDto requestDto);
 }
