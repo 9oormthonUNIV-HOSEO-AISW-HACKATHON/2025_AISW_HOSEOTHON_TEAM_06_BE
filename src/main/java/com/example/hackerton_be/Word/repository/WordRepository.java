@@ -10,4 +10,6 @@ import java.util.List;
 public interface WordRepository extends JpaRepository<Word, Long> {
 
     List<Word> findByNameContainingIgnoreCase(String name);
+
+    List<Word> findTop3ByOrderByCountDesc();
 }

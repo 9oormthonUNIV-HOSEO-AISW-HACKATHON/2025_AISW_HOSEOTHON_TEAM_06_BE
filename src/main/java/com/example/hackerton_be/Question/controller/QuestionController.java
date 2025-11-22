@@ -35,8 +35,7 @@ public class QuestionController {
     @PostMapping("/check")
     public ResponseEntity<String> checkAnswer(
             @RequestBody QuestionAnswerDto requestDto,
-            Authentication authentication
-    ) {
+            Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
         }

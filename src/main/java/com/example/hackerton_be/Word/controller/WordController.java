@@ -23,9 +23,7 @@ public class WordController {
      * 단어 이름 기반 검색 API
      */
     @GetMapping("/search")
-    public ResponseEntity<List<WordByNameDto>> searchWord(
-            @RequestParam String name
-    ) {
+    public ResponseEntity<List<WordByNameDto>> searchWord(@RequestParam String name) {
         List<WordByNameDto> results = wordService.searchWordByName(name);
 
         if (results.isEmpty()) {
@@ -35,6 +33,15 @@ public class WordController {
         return ResponseEntity.ok(results);
     }
 
+    /**
+     * 단어 검색 Top 3
+     * */
+    @GetMapping("/wordTop3")
+    public ResponseEntity<List<WordByNameDto>> top3Words() {
+        List<WordByNameDto> topWords = wordService.getTop3Words();
 
+        // 결과가 없더라도 200 OK와 빈 리스트를 반환합니다.
+        return ResponseEntity.ok(topWords);
+    }
 
 }

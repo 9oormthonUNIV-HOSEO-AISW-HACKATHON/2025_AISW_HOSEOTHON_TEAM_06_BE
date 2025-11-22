@@ -7,4 +7,6 @@ import java.util.List;
 public interface WordService {
 
     List<WordByNameDto> searchWordByName(String name);
+
+    List<WordByNameDto> getTop3Words();
 }
