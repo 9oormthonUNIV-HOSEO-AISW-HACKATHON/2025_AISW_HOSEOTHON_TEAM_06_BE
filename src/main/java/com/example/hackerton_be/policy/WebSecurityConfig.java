@@ -15,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -41,6 +46,9 @@ public class WebSecurityConfig {
         http
                 // 1. CSRF 비활성화 (REST API 표준)
                 .csrf(AbstractHttpConfigurer::disable)
+
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
 
                 // 2. 세션 STATELESS 설정 (JWT 사용 시 필수)
                 // authorizeHttpRequests 블록 밖으로 이동
@@ -85,5 +93,28 @@ public class WebSecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
         );
         return http.build();
+    }
+
+    // ✨ 1. CorsConfigurationSource Bean 정의 및 Vercel 도메인 추가
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 🚨 Vercel 배포 시 실제 프런트엔드 도메인을 여기에 추가해야 합니다.
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://hoseothon11.vercel.app/"
+        ));
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 쿠키 (리프레시 토큰) 처리를 위해 true로 설정
+        configuration.setAllowCredentials(true);
+
+        // JWT Authorization 헤더를 포함하여 모든 헤더를 허용
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
+        return source;
     }
 }
